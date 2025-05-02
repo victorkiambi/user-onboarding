@@ -58,6 +58,10 @@ class DatabaseSeeder extends Seeder
             'status' => 'pending',
             'role' => 'user',
         ]);
+        // Ensure all factory users have the 'user' role
+        foreach ($users as $user) {
+            $user->assignRole($userRole);
+        }
 
         // Add sample audit logs for the first 3 users
         $sampleActions = [

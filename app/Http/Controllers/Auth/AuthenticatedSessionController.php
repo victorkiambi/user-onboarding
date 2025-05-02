@@ -24,7 +24,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        try {
+            $request->authenticate();
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // If the exception contains a user status message, use it for feedback
+            $message = $e->errors()['email'][0] ?? 'Login failed.';
+            return redirect()->back()->withInput($request->only('email'))
+                ->with('status', $message);
+        }
 
         $request->session()->regenerate();
 
@@ -32,10 +39,7 @@ class AuthenticatedSessionController extends Controller
         if ($user && $user->hasRole('admin')) {
             return redirect()->intended(route('admin.dashboard', absolute: false));
         }
-        if ($user && $user->hasRole('user')) {
-            return redirect()->intended(route('user.dashboard', absolute: false));
-        }
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect(route('user.dashboard', absolute: false));
     }
 
     /**

@@ -51,6 +51,9 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Assign the 'user' role
+        $user->assignRole('user');
+
         // Store files in public/users/{user_id}/
         $dir = 'users/' . $user->id;
         $user->profile_photo = $request->file('profile_photo')->store($dir, 'public');
