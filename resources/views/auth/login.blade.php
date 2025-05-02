@@ -2,6 +2,13 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    <!-- Pending/Rejected Feedback -->
+    @if ($errors->has('email'))
+        <div class="mb-4 p-4 rounded bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800">
+            {{ $errors->first('email') }}
+        </div>
+    @endif
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 

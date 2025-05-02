@@ -36,6 +36,23 @@ class DatabaseSeeder extends Seeder
         );
         $admin->assignRole($adminRole);
 
+        // Create an approved regular user for dashboard testing
+        $approvedUser = User::firstOrCreate(
+            ['email' => 'user@example.com'],
+            [
+                'name' => 'Approved User',
+                'phone' => '5551234567',
+                'address' => '123 Main St',
+                'status' => 'approved',
+                'profile_photo' => null,
+                'id_front' => null,
+                'id_back' => null,
+                'role' => 'user',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $approvedUser->assignRole($userRole);
+
         // Seed multiple pending users for admin dashboard testing
         $users = \App\Models\User::factory()->count(12)->create([
             'status' => 'pending',

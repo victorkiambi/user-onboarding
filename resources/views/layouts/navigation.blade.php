@@ -17,7 +17,7 @@
                             {{ __('Admin Dashboard') }}
                         </x-nav-link>
                     @else
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        <x-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
                     @endif
@@ -40,7 +40,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                        <x-dropdown-link :href="route(Auth::user()->hasRole('admin') ? 'profile.edit' : 'user.profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
@@ -78,7 +78,7 @@
                     {{ __('Admin Dashboard') }}
                 </x-responsive-nav-link>
             @else
-                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                <x-responsive-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
                     {{ __('Dashboard') }}
                 </x-responsive-nav-link>
             @endif
@@ -92,7 +92,7 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
+                <x-responsive-nav-link :href="route(Auth::user()->hasRole('admin') ? 'profile.edit' : 'user.profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
 

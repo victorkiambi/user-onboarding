@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
         @csrf
 
         <!-- Name -->
@@ -14,6 +14,41 @@
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
+
+        <!-- Phone -->
+        <div class="mt-4">
+            <x-input-label for="phone" :value="__('Phone')" />
+            <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone')" required autocomplete="tel" />
+            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+        </div>
+
+        <!-- Address -->
+        <div class="mt-4">
+            <x-input-label for="address" :value="__('Address')" />
+            <x-text-input id="address" class="block mt-1 w-full" type="text" name="address" :value="old('address')" required autocomplete="street-address" />
+            <x-input-error :messages="$errors->get('address')" class="mt-2" />
+        </div>
+
+        <!-- Profile Photo -->
+        <div class="mt-4">
+            <x-input-label for="profile_photo" :value="__('Profile Photo')" />
+            <input id="profile_photo" class="block mt-1 w-full border-gray-300 rounded" type="file" name="profile_photo" accept="image/jpeg,image/png,image/jpg" required />
+            <x-input-error :messages="$errors->get('profile_photo')" class="mt-2" />
+        </div>
+
+        <!-- ID Front -->
+        <div class="mt-4">
+            <x-input-label for="id_front" :value="__('Front of National ID')" />
+            <input id="id_front" class="block mt-1 w-full border-gray-300 rounded" type="file" name="id_front" accept="image/jpeg,image/png,image/jpg" required />
+            <x-input-error :messages="$errors->get('id_front')" class="mt-2" />
+        </div>
+
+        <!-- ID Back -->
+        <div class="mt-4">
+            <x-input-label for="id_back" :value="__('Back of National ID')" />
+            <input id="id_back" class="block mt-1 w-full border-gray-300 rounded" type="file" name="id_back" accept="image/jpeg,image/png,image/jpg" required />
+            <x-input-error :messages="$errors->get('id_back')" class="mt-2" />
         </div>
 
         <!-- Password -->

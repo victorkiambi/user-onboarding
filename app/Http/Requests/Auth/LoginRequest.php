@@ -49,6 +49,17 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Only allow approved users to log in
+        $user = Auth::user();
+        if ($user->status !== 'approved') {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => $user->status === 'pending'
+                    ? 'Your account is still under review.'
+                    : 'Your account has been rejected. Please contact support.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 
