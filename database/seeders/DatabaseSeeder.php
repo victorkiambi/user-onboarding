@@ -37,9 +37,25 @@ class DatabaseSeeder extends Seeder
         $admin->assignRole($adminRole);
 
         // Seed multiple pending users for admin dashboard testing
-        \App\Models\User::factory()->count(12)->create([
+        $users = \App\Models\User::factory()->count(12)->create([
             'status' => 'pending',
             'role' => 'user',
         ]);
+
+        // Add sample audit logs for the first 3 users
+        $sampleActions = [
+            ['action' => 'rejected', 'reason' => 'Incomplete documents'],
+            ['action' => 'approved', 'reason' => null],
+            ['action' => 'rejected', 'reason' => 'Invalid ID provided'],
+        ];
+        foreach ($users->take(3) as $i => $user) {
+            \App\Models\AuditLog::create([
+                'user_id' => $user->id,
+                'admin_id' => $admin->id,
+                'action' => $sampleActions[$i]['action'],
+                'reason' => $sampleActions[$i]['reason'],
+                'created_at' => now()->subDays(3 - $i),
+            ]);
+        }
     }
 }

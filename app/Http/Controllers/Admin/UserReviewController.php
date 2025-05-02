@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\AuditLog;
+use App\Notifications\UserApproved;
+use App\Notifications\UserRejected;
 
 class UserReviewController extends Controller
 {
@@ -25,15 +28,19 @@ class UserReviewController extends Controller
                   ->orWhere('phone', 'like', "%$search%") ;
             });
         }
-        $pendingUsers = $query->get();
+        $pendingUsers = $query->paginate(10)->withQueryString();
         return view('admin.dashboard', compact('pendingUsers', 'status', 'search'));
     }
 
     // Show details for a specific user
     public function show(User $user)
     {
-        // TODO: Add authorization if needed
-        return view('admin.user_show', compact('user'));
+        // Fetch audit logs for this user
+        $auditLogs = \App\Models\AuditLog::where('user_id', $user->id)
+            ->with('admin')
+            ->orderByDesc('created_at')
+            ->get();
+        return view('admin.user_show', compact('user', 'auditLogs'));
     }
 
     // Approve a user
@@ -41,18 +48,33 @@ class UserReviewController extends Controller
     {
         $user->status = 'approved';
         $user->save();
-        // TODO: Send approval notification to user
-        // TODO: Log action in audit_logs
+        // Send approval notification
+        $user->notify(new UserApproved());
+        // Log action in audit_logs
+        AuditLog::create([
+            'user_id' => $user->id,
+            'admin_id' => auth()->id(),
+            'action' => 'approved',
+            'reason' => null,
+        ]);
         return redirect()->route('admin.dashboard')->with('success', 'User approved.');
     }
 
     // Reject a user
-    public function reject(User $user)
+    public function reject(Request $request, User $user)
     {
+        $reason = $request->input('reason');
         $user->status = 'rejected';
         $user->save();
-        // TODO: Send rejection notification to user
-        // TODO: Log action in audit_logs
+        // Send rejection notification
+        $user->notify(new UserRejected($reason));
+        // Log action in audit_logs
+        AuditLog::create([
+            'user_id' => $user->id,
+            'admin_id' => auth()->id(),
+            'action' => 'rejected',
+            'reason' => $reason,
+        ]);
         return redirect()->route('admin.dashboard')->with('success', 'User rejected.');
     }
 } 
