@@ -92,4 +92,10 @@ Pull requests welcome! Please:
 ---
 
 ## License
-[MIT](LICENSE) 
+[MIT](LICENSE)
+
+---
+
+## Documentation
+- [System Architecture](docs/ARCHITECTURE.md)
+- [Database Design & ERD](docs/DATABASE.md) 
