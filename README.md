@@ -18,9 +18,16 @@ A robust, modern Laravel application for secure user onboarding, document verifi
 - Edit profile and edit documents (with validation and file re-upload)
 - Navigation tailored to user role
 
+### User Deletion & Restoration
+- Admins can soft-delete (archive) rejected users. Soft-deleted users are not permanently removed and can be restored.
+- Soft-deleted users are clearly marked in the admin dashboard and cannot be reviewed (the Review button is disabled).
+- Admins can restore soft-deleted users or permanently delete them if needed.
+
 ### Admin Review
 - `/admin/dashboard`: List/search/filter pending users
 - View user details, approve/reject with reason
+- Delete: Admins can delete (soft delete) rejected users. Deleted users can be restored or permanently removed.
+- Restore: Admins can restore soft-deleted users to active status.
 - Audit logs for all admin actions
 - Admin and user notifications
 - Role-based access control (RBAC) with Spatie
@@ -84,6 +91,14 @@ Use these credentials to log in as an admin or an approved user (from seeded dat
   - Email: `user@example.com`
   - Password: `password`
 
+## Seeded Users for Testing
+- 3 pending users
+- 3 approved users
+- 3 rejected users
+- 3 deleted (soft-deleted) users
+- 1 admin (admin@example.com / password)
+- 1 approved user (user@example.com / password)
+
 ---
 
 ## Testing
@@ -91,6 +106,7 @@ Run the full test suite:
 ```bash
 php artisan test
 ```
+- The test suite includes automated tests for admin soft delete and restore actions.
 
 ---
 
