@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Http\UploadedFile;
 
 class RegistrationTest extends TestCase
 {
@@ -18,14 +19,22 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
+        $this->seed();
+
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'phone' => '1234567890',
+            'address' => '123 Test St',
             'password' => 'password',
             'password_confirmation' => 'password',
+            'profile_photo' => UploadedFile::fake()->image('profile.jpg'),
+            'id_front' => UploadedFile::fake()->image('id_front.jpg'),
+            'id_back' => UploadedFile::fake()->image('id_back.jpg'),
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertGuest();
+        $response->assertRedirect(route('login', absolute: false));
+        $response->assertSessionHas('status', 'Your account is under review. You will be notified once approved.');
     }
 }
