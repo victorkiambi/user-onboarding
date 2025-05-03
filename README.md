@@ -65,6 +65,27 @@ Visit [http://localhost:8000](http://localhost:8000)
 
 ---
 
+## Deployment
+
+The app is deployed on Fly.io:
+
+- **Production URL:** [https://user-onboarding.fly.dev/](https://user-onboarding.fly.dev/)
+
+---
+
+## Demo Credentials
+
+Use these credentials to log in as an admin or an approved user (from seeded data):
+
+- **Admin**
+  - Email: `admin@example.com`
+  - Password: `password`
+- **Approved User**
+  - Email: `user@example.com`
+  - Password: `password`
+
+---
+
 ## Testing
 Run the full test suite:
 ```bash
