@@ -122,4 +122,44 @@ class AdminFlowTest extends TestCase
         $response = $this->get('/admin/dashboard');
         $response->assertRedirect('/login');
     }
+
+    public function test_admin_can_soft_delete_rejected_user()
+    {
+        $this->seed();
+        $admin = User::factory()->create(['status' => 'approved']);
+        $admin->assignRole('admin');
+        $rejectedUser = User::factory()->create(['status' => 'rejected']);
+        $rejectedUser->assignRole('user');
+
+        $response = $this->actingAs($admin)->post('/admin/users/' . $rejectedUser->id . '/soft-delete');
+        $response->assertRedirect('/admin/dashboard');
+        $this->assertSoftDeleted('users', ['id' => $rejectedUser->id]);
+    }
+
+    public function test_admin_cannot_soft_delete_non_rejected_user()
+    {
+        $this->seed();
+        $admin = User::factory()->create(['status' => 'approved']);
+        $admin->assignRole('admin');
+        $approvedUser = User::factory()->create(['status' => 'approved']);
+        $approvedUser->assignRole('user');
+
+        $response = $this->actingAs($admin)->post('/admin/users/' . $approvedUser->id . '/soft-delete');
+        $response->assertRedirect('/admin/dashboard');
+        $this->assertDatabaseHas('users', ['id' => $approvedUser->id, 'deleted_at' => null]);
+    }
+
+    public function test_admin_can_restore_soft_deleted_user()
+    {
+        $this->seed();
+        $admin = User::factory()->create(['status' => 'approved']);
+        $admin->assignRole('admin');
+        $rejectedUser = User::factory()->create(['status' => 'rejected']);
+        $rejectedUser->assignRole('user');
+        $rejectedUser->delete();
+
+        $response = $this->actingAs($admin)->post('/admin/users/' . $rejectedUser->id . '/restore');
+        $response->assertRedirect('/admin/dashboard');
+        $this->assertDatabaseHas('users', ['id' => $rejectedUser->id, 'deleted_at' => null]);
+    }
 } 
