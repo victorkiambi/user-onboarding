@@ -99,6 +99,13 @@ class ProfileController extends Controller
             $user->id_back = $request->file('id_back')->store($dir, 'public');
         }
         $user->save();
+        // Redirect to the correct dashboard based on user role
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard')->with('status', 'Documents updated successfully.');
+        } elseif ($user->hasRole('user')) {
+            return redirect()->route('user.dashboard')->with('status', 'Documents updated successfully.');
+        }
+        // Fallback for other roles or future extensibility
         return redirect()->route('dashboard')->with('status', 'Documents updated successfully.');
     }
 }
