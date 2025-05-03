@@ -47,7 +47,7 @@
                     @foreach($pendingUsers as $user)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <img src="{{ $user->profile_photo }}" alt="Profile Photo" class="w-12 h-12 rounded-full object-cover border">
+                                <img src="{{ Str::startsWith($user->profile_photo, 'http') ? $user->profile_photo : asset('storage/' . $user->profile_photo) }}" alt="Profile Photo" class="w-12 h-12 rounded-full object-cover border">
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-900 font-semibold">{{ $user->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-900">{{ $user->email }}</td>
